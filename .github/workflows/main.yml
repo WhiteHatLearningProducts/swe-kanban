@@ -6,14 +6,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
           start: npm start
           wait-on: http://localhost:3000
   integration-tests:
-     runs-on: ubunto-latest
+     runs-on: ubuntu-latest
      steps:
        - name: Checkout
          uses: actions/checkout@v2
