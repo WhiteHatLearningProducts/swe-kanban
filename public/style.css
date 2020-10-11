@@ -1,0 +1,13 @@
+* {
+    padding: .25rem;
+    margin: 0;
+}
+article {
+    display: flex;
+}
+article ul {
+    flex: none;
+}
+article div {
+    flex: auto;
+}
