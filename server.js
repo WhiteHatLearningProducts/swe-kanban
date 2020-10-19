@@ -25,24 +25,42 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/boards/:id', async (req, res) => {
-    const board = await Board.findByPk(req.params.id, {
-        plain: true,
+    const board = await Board.findByPk(req.params.id)
+    const tasks = await Task.findAll({
+        where: {
+            boardId: board.id
+        },
         include: [
-            {model: Task, as: 'tasks'},
             {model: User, as: 'user'}
         ]
     })
-    const tasks = await Promise.all(board.tasks.map(task => task.getUser()))
-    console.log(tasks)
-    const users = await User.findAll({}, {plain: true})
+
+    const users = await User.findAll()
+
     res.render('board', {
         board: JSON.stringify(board),
+        tasks: JSON.stringify(tasks),
         users: JSON.stringify(users)
     })
 })
 
-app.post('/users', (req, res) => {
-    res.send()
+app.get('/boards/:board_id/tasks/:task_id/update/:status', async (req, res) => {
+    const task = await Task.findByPk(req.params.task_id)
+    await task.update({status: Number(req.params.status)})
+    res.send(task)
+})
+
+app.post('/boards/:id/tasks', async (req, res) => {
+    const board = await Board.findByPk(req.params.id)
+    const { desc, userId } = req.body
+    const task = await Task.create({desc, userId: Number(userId), status: 0})
+    await board.addTask(task)
+    Task.findByPk(task.id, {include: 'user'}).then(task => res.send(task))
+})
+
+app.post('/users', async (req, res) => {
+    const user = await User.create(req.body)
+    res.send(user)
 })
 
 app.listen(3000, () => {

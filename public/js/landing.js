@@ -5,7 +5,7 @@ const viewUsers = state => `
             return `
                 <article class="user-pill">
                     <img src="${user.avatar}" alt="${user.name}"/>
-                    <span>${user.name}</span>
+                    <span>${user.name.substring(0,11)}</span>
                 </article>
             `
         }).join("")}
@@ -13,7 +13,7 @@ const viewUsers = state => `
 `
 
 const viewBoards = state => `
-    <section>
+    <section class="board-list">
         ${state.boards.map(board => {
             return `
                 <a href="/boards/${board.id}">
@@ -28,7 +28,7 @@ const viewBoards = state => `
 
 const viewAddUserModal = state => state.modal ? `
     <section id="modal" onclick="app.run('hideModal')">
-        <form action="/users" method="POST" onsubmit="event.stopPropagation()">
+        <form onclick="event.stopPropagation();" onsubmit="event.stopPropagation();app.run('addUser', this);return false;">
             <input name="name" placeholder="username" required/>
             <input name="avatar" type="url" placeholder="avatar URL" required />
             <button>Add User</button>
@@ -37,12 +37,30 @@ const viewAddUserModal = state => state.modal ? `
 ` : ""
 
 const view = state => [
-    viewUsers(state),
+    "<h1>Kanban</h1>",
     viewBoards(state),
+    viewUsers(state),
     viewAddUserModal(state)
 ].join("")
 
 const update = {
+    addUser: async (state, form) => {
+        const data = new FormData(form)
+        const payload = {
+            name: data.get('name'),
+            avatar: data.get('avatar')
+        }
+        const user = await fetch('/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        }).then(res => res.json())
+        state.modal = false
+        state.users.push(user)
+        return state
+    },
     showModal: state => {
         state.modal = true
         return state

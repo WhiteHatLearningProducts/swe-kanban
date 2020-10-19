@@ -21,8 +21,7 @@ Task.init({
 Board.hasMany(Task, {as: 'tasks'})
 Task.belongsTo(Board)
 User.hasMany(Task)
-Task.belongsTo(User)
-User.belongsToMany(Board, {through: Task})
+Task.belongsTo(User, {as: 'user'})
 
 module.exports = {
     Board,
