@@ -4,31 +4,29 @@ const sequelize = process.env.NODE_ENV === 'test'
     ? new Sequelize('sqlite::memory:', null, null, {dialect: 'sqlite'})
     : new Sequelize({dialect: 'sqlite', storage: path.join(__dirname, 'data.db')})
 
-class Restaurant extends Model {}
-Restaurant.init({
+class User extends Model {}
+User.init({
     name: DataTypes.STRING,
-    image: DataTypes.STRING
+    avatar: DataTypes.STRING
 }, {sequelize})
-
-class Menu extends Model {}
-Menu.init({
+class Board extends Model {}
+Board.init({
     title: DataTypes.STRING
 }, {sequelize})
-
-class Item extends Model {}
-Item.init({
-    name: DataTypes.STRING,
-    price: DataTypes.FLOAT
+class Task extends Model {}
+Task.init({
+    desc: DataTypes.STRING,
+    status: DataTypes.NUMBER
 }, {sequelize})
-
-Restaurant.hasMany(Menu)
-Menu.belongsTo(Restaurant)
-Menu.hasMany(Item)
-Item.belongsTo(Menu)
+Board.hasMany(Task, {as: 'tasks'})
+Task.belongsTo(Board)
+User.hasMany(Task)
+Task.belongsTo(User)
+User.belongsToMany(Board, {through: Task})
 
 module.exports = {
-    Restaurant,
-    Menu,
-    Item,
+    Board,
+    User,
+    Task,
     sequelize
 }
