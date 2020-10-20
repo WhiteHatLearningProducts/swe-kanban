@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "watch": "NODE_ENV=dev PORT=3000 nodemon server.js",
+    "dev": "NODE_ENV=dev PORT=3000 nodemon server.js",
     "test": "PORT=3001 jest --watchAll",
     "test:cypress": "PORT=3001 cypress open"
   },
@@ -20,13 +20,13 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.1.0",
     "handlebars": "^4.5.3",
-    "jest": "^26.4.2",
-    "nodemon": "^2.0.4",
     "pg": "^8.4.1",
-    "sequelize": "^6.3.5",
-    "sqlite3": "^5.0.0"
+    "sequelize": "^6.3.5"
   },
   "devDependencies": {
+    "sqlite3": "^5.0.0",
+    "nodemon": "^2.0.4",
+    "jest": "^26.4.2",
     "chai": "^4.2.0",
     "cypress": "^5.4.0",
     "mocha": "^8.2.0"
